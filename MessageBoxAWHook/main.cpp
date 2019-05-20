@@ -13,9 +13,10 @@ INT (WINAPI* oMessageBoxA)(HWND, LPCSTR, LPCSTR, UINT) = MessageBoxA;
 
 INT WINAPI hkMessageBoxA(HWND hWnd, LPCSTR lpText, LPCSTR lpCaption, UINT uType)
 {
-	int returnAddress = (int)_ReturnAddress();
-	LPCSTR lpNewCaption = std::to_string(returnAddress).c_str();
-	int iReturn = oMessageBoxA(hWnd, lpText, lpNewCaption, uType);
+	uintptr_t* returnAddress = (uintptr_t*)_ReturnAddress();
+	char newCaption[50];
+	sprintf_s(newCaption, "_ReturnAddress = %x", returnAddress);
+	int iReturn = oMessageBoxA(hWnd, lpText, newCaption, uType);
 	return  iReturn;
 }
 
@@ -24,8 +25,9 @@ INT (WINAPI* oMessageBoxW)(HWND, LPCWSTR, LPCWSTR, UINT) = MessageBoxW;
 INT WINAPI hkMessageBoxW(HWND hWnd, LPCWSTR lpText, LPCWSTR lpCaption, UINT uType)
 {
 	int returnAddress = (int)_ReturnAddress();
-	LPCWSTR lpNewCaption = L"MessageBoxW";
-	int iReturn = oMessageBoxW(hWnd, lpText, lpNewCaption, uType);
+	WCHAR newCaption[50];
+	wsprintfW(newCaption, L"_ReturnAddress = %x", returnAddress);
+	int iReturn = oMessageBoxW(hWnd, lpText, newCaption, uType);
 	return  iReturn;
 }
 
